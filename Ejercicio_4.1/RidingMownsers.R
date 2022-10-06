@@ -1,14 +1,11 @@
 library(class)
 library(caret)
 
-# Establecemos el directorio desde donde trabajaremos para cargar los ficheros de datos
-setwd("/Users/luismg/Library/CloudStorage/GoogleDrive-ragnemul@gmail.com/My Drive/Comillas/MABA/KNN/Ejercicios/Ejercicio 4.1")
 
-# Cargamos el fichero de datos
-data = read.csv("RidingMowers.csv")
+data = read.csv("https://raw.githubusercontent.com/ragnemul/K-NN/main/Ejercicio_4.1/RidingMowers.csv")
 
 # Especificando la misma semilla para la inicialización de los números aleatorios obtendremos los mismos resultados
-set.seed(123)
+set.seed(6548)
 
 # --------------
 # NORNMALIZACION
@@ -76,7 +73,7 @@ class::knn (train=data.norm, test=X.norm, cl=data$Ownership,
 # CONJUNTOS DE ENTRENAMIENTO Y VALIDACIÓN
 
 # Obtenemos un vector con el 80% de los registros (aleatorizado)
-train.idx <- sample(1:nrow(data),size=nrow(data)*0.8,replace = FALSE) 
+train.idx <- sample(1:nrow(data),size=nrow(data)*0.7,replace = FALSE) 
 
 # en train metemos los valores de data seleccionados por el indice
 train <- data[train.idx,] # 70% training data

@@ -1,12 +1,12 @@
 library(caret)
 
-install.packages('brio')
+#install.packages('brio')
 library(devtools)
 library(roxygen2)
-source_url("https://raw.github.com/ragnemul/K-NN/blob/main/Ejercicio%204.2/DrawConfusionMatrix.R")
+source_url("https://raw.githubusercontent.com/ragnemul/K-NN/main/Ejercicio_4.2/DrawConfusionMatrix.R")
 
 
-data.df = read.csv("https://github.com/ragnemul/K-NN/blob/main/Ejercicio%204.2/IBM-HR-Employee-Attrition.csv")
+data.df = read.csv("https://raw.githubusercontent.com/ragnemul/K-NN/main/Ejercicio_4.2/IBM-HR-Employee-Attrition.csv")
 # Eliminamos datos no necesarios
 # Eliminamos datos invariantes, variables independientes (no afecan al target), colineales múltiples, 
 
@@ -50,11 +50,11 @@ train <- data[train_split_idx, ]
 test <- data[-train_split_idx, ]
 
 
-fitControl1 <- trainControl(method = "cv", 
+fitControl1 <- caret::trainControl(method = "cv", 
                            number = 10, 
                            classProbs = TRUE, 
                            sampling = "smote",
-                           summaryFunction = twoClassSummary,
+                           summaryFunction = caret::twoClassSummary,
                            savePredictions = TRUE)
 
 fit_knn1 <- caret::train(Attrition ~ ., 
@@ -72,7 +72,7 @@ preds_1 <- predict(fit_knn1, newdata=test, type="raw")
 confussionMatrix_1 <- caret::confusionMatrix(as.factor(preds_1), as.factor(test$Attrition),positive="Yes")
 
 # Mostramos la matriz de confusión
-draw_2D_confusion_matrix(cm = confussionMatrix_2, caption = "Matriz de confusión test 2")
+draw_2D_confusion_matrix(cm = confussionMatrix_1, caption = "Matriz de confusión test 2")
 
 
 
@@ -106,6 +106,7 @@ draw_2D_confusion_matrix(cm = confussionMatrix_2, caption = "Matriz de confusió
 
 
 library(plyr)
+library(pROC)
 
 rocs_fit1 <- llply(unique(fit_knn1$pred$obs), function(cls) {
   roc(response = fit_knn1$pred$obs==cls, predictor = fit_knn1$pred[,as.character(cls)])
@@ -157,6 +158,6 @@ threshold.cost.plot <- ggplot(calc, aes(x=Cutoff)) +
 
 threshold.cost.plot
 
-Grafica + geom_vline(xintercept=cost.threshold, linetype="dashed", color="red")
+threshold.cost.plot + geom_vline(xintercept=cost.threshold, linetype="dashed", color="red")
 
 cat ("Recommended threhold:", round(cost.threshold,2))
