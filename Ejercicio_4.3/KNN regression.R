@@ -18,21 +18,24 @@ test.data <- Boston[-training.samples, ]
 model <- caret::train(
   medv~., data = train.data, method = "knn",
   trControl = caret::trainControl("cv", number = 10),
-  #preProcess = c("center","scale"),
   preProcess = c("range"),
   tuneLength = 10
 )
+
 # Plot model error RMSE vs different values of k
 plot(model)
+
 # Best tuning parameter k that minimize the RMSE
 model$bestTune
+
 # Make predictions on the test data
 predictions <- predict(model,test.data)
 head(predictions)
+
 # Compute the prediction error RMSE
 RMSE(predictions, test.data$medv)
 
-
+# plots real vs predicted values
 x = 1:dim(test.data)[1]
 plot(x, test.data$medv, col = "red", type = "l", lwd=2,
      main = "Boston housing test data prediction")
