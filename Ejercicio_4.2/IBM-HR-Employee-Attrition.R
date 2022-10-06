@@ -1,8 +1,8 @@
-# Load in the data
 library(caret)
-# stall.packages('ROCit')
-library(ROCit) # Para calcular métricas en función del umbral de forma automática
-library(caTools) # Para calcular curva ROC y área debajo de la curva
+
+source("DrawConfusionMatrix.R", # Para poder visualizar la matriz de confusión
+       encoding = 'UTF-8')      # Para interpretar bien las tildes
+
 
 # Establecemos el directorio desde donde trabajaremos para cargar los ficheros de datos
 setwd("/Users/luismg/Library/CloudStorage/GoogleDrive-ragnemul@gmail.com/My Drive/Comillas/MABA/KNN/Ejercicios/Ejercicio 4.2")
@@ -46,7 +46,7 @@ data$OverTime <- as.factor(data$OverTime)
 
 set.seed(123)
 
-#Perform train / test split on the data
+# Particionamiento de los datos en conjuntos de entrenamiento y test
 train_split_idx <- caret::createDataPartition(data$Attrition, p = 0.8, list = FALSE)
 train <- data[train_split_idx, ]
 test <- data[-train_split_idx, ]
@@ -72,6 +72,10 @@ plot(fit_knn1)
 #Make predictions to expose class labels
 preds_1 <- predict(fit_knn1, newdata=test, type="raw")
 confussionMatrix_1 <- caret::confusionMatrix(as.factor(preds_1), as.factor(test$Attrition),positive="Yes")
+
+# Mostramos la matriz de confusión
+draw_2D_confusion_matrix(cm = confussionMatrix_2, caption = "Matriz de confusión test 2")
+
 
 
 fitControl2 <- trainControl(method = "repeatedcv", 
@@ -99,15 +103,8 @@ preds_2 <- predict(fit_knn2, newdata=test, type="raw")
 confussionMatrix_2 <- caret::confusionMatrix(as.factor(preds_2), as.factor(test$Attrition),positive="Yes")
 
 
-source("ExtractInfoConfusionMatrix.R") 
-InfoTest1 <- extract_confusion_matrix(cm = confussionMatrix_1) # Devuelve una lista
-InfoTest2 <- extract_confusion_matrix(cm = confussionMatrix_2)
-
-TablaResultados <- rbind(as.data.frame(InfoTest1),
-                         as.data.frame(InfoTest2))
-
-TablaResultados
-
+# Mostramos la matriz de confusión
+draw_2D_confusion_matrix(cm = confussionMatrix_2, caption = "Matriz de confusión test 2")
 
 
 library(plyr)
@@ -125,6 +122,9 @@ plot(rocs_fit1[[1]],print.auc = TRUE, print.auc.y = 0.6, col = "red")
 plot(rocs_fit2[[2]],print.auc = TRUE, print.auc.y = 0.55, col = "blue", add=T, )
 
 
+
+############################################
+# En caso de que necesitemos poner umbrales para asociar a las clases a predecir
 
 pred_prob_fit1 <- predict(fit_knn1, newdata=test, type="prob")
 calc_fit1 <- measureit(score = as.numeric(unlist(pred_prob_fit1["Yes"])), 
