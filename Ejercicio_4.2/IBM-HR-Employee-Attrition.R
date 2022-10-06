@@ -1,14 +1,12 @@
 library(caret)
 
-source("DrawConfusionMatrix.R", # Para poder visualizar la matriz de confusión
-       encoding = 'UTF-8')      # Para interpretar bien las tildes
+install.packages('brio')
+library(devtools)
+library(roxygen2)
+source_url("https://raw.github.com/ragnemul/K-NN/blob/main/Ejercicio%204.2/DrawConfusionMatrix.R")
 
 
-# Establecemos el directorio desde donde trabajaremos para cargar los ficheros de datos
-setwd("/Users/luismg/Library/CloudStorage/GoogleDrive-ragnemul@gmail.com/My Drive/Comillas/MABA/KNN/Ejercicios/Ejercicio 4.2")
-
-data.df = read.csv("IBM-HR-Employee-Attrition.csv")
-
+data.df = read.csv("https://github.com/ragnemul/K-NN/blob/main/Ejercicio%204.2/IBM-HR-Employee-Attrition.csv")
 # Eliminamos datos no necesarios
 # Eliminamos datos invariantes, variables independientes (no afecan al target), colineales múltiples, 
 
